@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 
 namespace SampleApp
@@ -12,32 +13,41 @@ namespace SampleApp
         {
             Prices = prices;
 
-            var ret = BuyOfsell(0, 0, 0);
+            var ret = BuyOfsell(0, prices.Count - 1, 0, prices.Last());
 
             return ret;
         }
 
-        static long BuyOfsell(int stocks, int day, long money)
+        static long BuyOfsell(long stocks, int day, long money, int max)
         {
-            if (day >= Prices.Count)
+            if (day == -1)
             {
+                money += stocks * max;
                 return money;
             }
-            // 1주 사거나
-            var a = BuyOfsell(stocks + 1, day + 1, money - Prices[day]);
 
-            // 팔거나
-            var b = BuyOfsell(0, day + 1, money + Prices[day] * stocks);
+            // 최대값이 바뀌면 다 판다.
+            if (max <= Prices[day])
+            {
+                money += stocks * max;
+                max = Prices[day];
+                stocks = 0;
+            }
+            else
+            {
+                money -= Prices[day];
+                stocks++;
+            }
 
-            // 거래하지 않거나
-            var c = BuyOfsell(stocks , day + 1, money - Prices[day]);
+            
+            var c = BuyOfsell(stocks , day - 1, money , max);
 
-            return Math.Max(a, Math.Max(b, c));
+            return c;
         }
 
         static void Main(string[] args)
         {
-            stockmax(new List<int> { 1, 2, 100 }).Should().Be(197);
+            stockmax(new List<int> { 4,3,2 }).Should().Be(0);
         }
     }
 }
