@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Numerics;
 
 namespace Tool1
 {
@@ -6,7 +7,10 @@ namespace Tool1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine(BigInteger.ModPow(new BigInteger(131), new BigInteger(i), 1000000007) );
+            }
         }
     }
 }
